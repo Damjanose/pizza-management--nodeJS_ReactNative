@@ -102,3 +102,14 @@ The app provides different features depending on the authenticated user's role:
 - Role and authentication token are stored securely
 
 
+# ✍️ Author
+
+Built by **Damjano**  
+GitHub: [@Damjanose](https://github.com/Damjanose/pizza-management)
+---
+# 📄 License
+
+**MIT License**  
+Copyright (c) 2025  
+Created and maintained by [@Damjanose](https://github.com/Damjanose/pizza-management)
+
