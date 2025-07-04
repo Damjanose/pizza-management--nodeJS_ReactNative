@@ -1,27 +1,41 @@
-import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
-import { getAccessTokenFromEncryptedStorage } from "../../store/auth/token.ts";
+import axios, {
+  AxiosInstance,
+  AxiosRequestHeaders,
+  InternalAxiosRequestConfig,
+} from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const options = {
-  baseURL: "https://dummyjson.com",
-  headers: { "Content-Type": "application/json" },
-  withCredentials: true,
-};
-
-const axiosInstance = axios.create(options);
+const axiosInstance = axios.create({
+  baseURL: "http://127.0.0.1:3000/api",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});
 
 axiosInstance.interceptors.request.use(
-  async (config) => {
+  async (config: InternalAxiosRequestConfig) => {
     try {
-      let accessToken = await getAccessTokenFromEncryptedStorage();
-      if (accessToken) {
-        config.headers = {
-          ...config.headers,
-          Authorization: `Bearer ${accessToken || ""}`,
-        } as AxiosRequestHeaders;
+      const role = await AsyncStorage.getItem("user_role");
+
+      if (role && config.headers) {
+        (config.headers as AxiosRequestHeaders)["x-role"] = role;
       }
+
+      // // Optional: log cURL
+      // const method = config.method?.toUpperCase() || "GET";
+      // const url = config.baseURL + config.url;
+      // const headers = config.headers || {};
+      // const data = config.data ? `-d '${JSON.stringify(config.data)}'` : "";
+      // const headerString = Object.entries(headers)
+      //   .map(([k, v]) => `-H "${k}: ${v}"`)
+      //   .join(" ");
+      //
+      // console.log(`curl -X ${method} ${headerString} "${url}" ${data}`);
 
       return config;
     } catch (error) {
+      console.error("Request interceptor error:", error);
       return Promise.reject(error);
     }
   },
@@ -30,6 +44,4 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-export default (): AxiosInstance => {
-  return axiosInstance;
-};
+export default (): AxiosInstance => axiosInstance;

@@ -1,9 +1,16 @@
+// LoginScreen.styles.ts
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: "#F5FCFC",
+  },
+  container: {
+    flex: 1, // fill the whole area
+  },
+  inner: {
+    flex: 1, // inner takes full height too
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
@@ -33,6 +40,7 @@ export default StyleSheet.create({
   },
   input: {
     height: 50,
+    color: "#333",
   },
   button: {
     backgroundColor: "#007BFF",

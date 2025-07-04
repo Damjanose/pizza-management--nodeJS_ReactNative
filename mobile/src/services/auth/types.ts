@@ -1,6 +1,6 @@
 export type LoginData = {
-  username: string;
-  password: string;
+  name: string;
+  pass: string;
 };
 
 export interface LoginResponse {

@@ -1,70 +1,82 @@
+// LoginScreen.tsx
 import React, { useState } from "react";
 import {
   ActivityIndicator,
   Image,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import useAuth from "../../providers/hooks/useAuth.ts";
-import styles from "./LoginScreen.styles.ts";
+import useAuth from "../../providers/hooks/useAuth";
+import styles from "./LoginScreen.styles";
 
 export default function LoginScreen() {
   const { login, error, loading } = useAuth();
-  const [username, setUsername] = useState("emilys");
-  const [password, setPassword] = useState("emilyspass");
+  const [name, setName] = useState("cook"); // waiter
+  const [pass, setPass] = useState("cook"); // waiter
 
   const handleLogin = async () => {
-    await login(username, password);
+    await login(name, pass);
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Image
-          source={require("../../assets/images/logo.png")}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.title}>Login</Text>
-        {error && <Text style={styles.textErr}>{error}</Text>}
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding" // use padding on both platforms
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inner}>
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <Text style={styles.title}>Login</Text>
+            {error && <Text style={styles.textErr}>{error}</Text>}
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={username}
-            onChangeText={setUsername}
-            placeholder="Email"
-            style={styles.input}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                value={name}
+                onChangeText={setName}
+                placeholder="Email"
+                style={styles.input}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            style={styles.input}
-            secureTextEntry
-          />
-        </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                value={pass}
+                onChangeText={setPass}
+                placeholder="Password"
+                style={styles.input}
+                secureTextEntry
+              />
+            </View>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleLogin}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" size={20} />
-          ) : (
-            <Text style={styles.buttonText}>Login</Text>
-          )}
-        </TouchableOpacity>
-      </View>
-    </TouchableWithoutFeedback>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleLogin}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" size={20} />
+              ) : (
+                <Text style={styles.buttonText}>Login</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

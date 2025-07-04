@@ -5,8 +5,8 @@ export const getAccessTokenFromEncryptedStorage = async (): Promise<
   string | void
 > => {
   try {
-    const token = await EncryptedStorage.getItem(ACCESS_TOKEN);
-    if (token) return token;
+    const role = await EncryptedStorage.getItem(ACCESS_TOKEN);
+    if (role) return role;
     return "";
   } catch (e) {
     return "";
