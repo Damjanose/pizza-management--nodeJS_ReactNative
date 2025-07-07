@@ -11,8 +11,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Order, useOrdersStore } from "../../stores/useOrdersStore";
-import useSocket from "../../providers/hooks/useSocket.ts";
-import useSocketEventListener from "../../hooks/useSocketEventListener.ts";
 
 type WaiterStackParamList = {
   WaiterHome: undefined;
@@ -25,21 +23,12 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 export default function WaiterHomeScreen() {
-  const { socket } = useSocket();
   const { orders, loading, error, fetchOrders } = useOrdersStore();
   const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
     fetchOrders().catch(console.error);
   }, [fetchOrders]);
-
-  useSocketEventListener({
-    event: "newOrder",
-    handler: async (data: { table: number; ingredients: Array<number> }) => {
-      console.log(data);
-      fetchOrders().catch(console.error);
-    },
-  });
 
   if (loading && orders.length === 0) {
     return (

@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { Order, useOrdersStore } from "../../stores/useOrdersStore";
+import useSocketEventListener from "../../hooks/useSocketEventListener.ts";
 
 interface Props {
   status: Order["status"];
@@ -26,8 +27,15 @@ export default function OrdersListByStatus({
   const filtered = orders.filter((o) => o.status === status);
 
   useEffect(() => {
-    fetchOrders();
+    fetchOrders().catch(console.error);
   }, [fetchOrders]);
+
+  useSocketEventListener({
+    event: "newOrder",
+    handler: async () => {
+      fetchOrders().catch(console.error);
+    },
+  });
 
   const onRefresh = useCallback(() => fetchOrders(), [fetchOrders]);
 

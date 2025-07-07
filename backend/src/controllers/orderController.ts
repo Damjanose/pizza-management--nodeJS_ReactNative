@@ -1,9 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../utils/prisma';
-import { CreateOrderRequest, UpdateOrderRequest, OrderResponse } from '../types/order';
-import { OrderStatus } from '@prisma/client';
+// src/controllers/orderController.ts
+import {NextFunction, Request, Response} from 'express';
+import {prisma} from '../utils/prisma';
+import {CreateOrderRequest, OrderResponse, UpdateOrderRequest} from '../types/order';
+import {OrderStatus} from '@prisma/client';
 
-export const createOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const createOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const { tableNumber, ingredientIds }: CreateOrderRequest = req.body;
 
@@ -16,7 +21,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       data: {
         tableNumber,
         ingredients: {
-          create: ingredientIds.map(ingredientId => ({
+          create: ingredientIds.map((ingredientId) => ({
             ingredientId,
           })),
         },
@@ -36,11 +41,15 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       status: order.status,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-      ingredients: order.ingredients.map(oi => ({
+      ingredients: order.ingredients.map((oi) => ({
         id: oi.ingredient.id,
         name: oi.ingredient.name,
       })),
     };
+
+    // — Emit newOrder event
+    const io = req.app.get('io') as import('socket.io').Server;
+    io.emit('newOrder', response);
 
     res.status(201).json(response);
   } catch (error) {
@@ -48,9 +57,13 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const updateOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const updateOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const orderId = parseInt(req.params.id);
+    const orderId = parseInt(req.params.id, 10);
     const { tableNumber, ingredientIds }: UpdateOrderRequest = req.body;
 
     if (isNaN(orderId)) {
@@ -58,37 +71,25 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    // Check if order exists and is still waiting
-    const existingOrder = await prisma.order.findUnique({
-      where: { id: orderId },
-    });
-
+    const existingOrder = await prisma.order.findUnique({ where: { id: orderId } });
     if (!existingOrder) {
       res.status(404).json({ error: 'Order not found' });
       return;
     }
-
     if (existingOrder.status !== OrderStatus.WAITING) {
       res.status(400).json({ error: 'Can only update orders with waiting status' });
       return;
     }
 
     const updateData: any = {};
-    
     if (tableNumber !== undefined) {
       updateData.tableNumber = tableNumber;
     }
-
     if (ingredientIds) {
-      // Remove existing ingredients and add new ones
-      await prisma.orderIngredient.deleteMany({
-        where: { orderId },
-      });
-
+      // replace ingredients
+      await prisma.orderIngredient.deleteMany({ where: { orderId } });
       updateData.ingredients = {
-        create: ingredientIds.map(ingredientId => ({
-          ingredientId,
-        })),
+        create: ingredientIds.map((ingredientId) => ({ ingredientId })),
       };
     }
 
@@ -97,9 +98,7 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
       data: updateData,
       include: {
         ingredients: {
-          include: {
-            ingredient: true,
-          },
+          include: { ingredient: true },
         },
       },
     });
@@ -110,11 +109,15 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
       status: updatedOrder.status,
       createdAt: updatedOrder.createdAt,
       updatedAt: updatedOrder.updatedAt,
-      ingredients: updatedOrder.ingredients.map(oi => ({
+      ingredients: updatedOrder.ingredients.map((oi) => ({
         id: oi.ingredient.id,
         name: oi.ingredient.name,
       })),
     };
+
+    // — Emit orderUpdated event
+    const io = req.app.get('io') as import('socket.io').Server;
+    io.emit('orderUpdated', response);
 
     res.json(response);
   } catch (error) {
@@ -122,28 +125,28 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const getAllOrders = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getAllOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const orders = await prisma.order.findMany({
       include: {
         ingredients: {
-          include: {
-            ingredient: true,
-          },
+          include: { ingredient: true },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc' },
     });
 
-    const response: OrderResponse[] = orders.map(order => ({
+    const response: OrderResponse[] = orders.map((order) => ({
       id: order.id,
       tableNumber: order.tableNumber,
       status: order.status,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-      ingredients: order.ingredients.map(oi => ({
+      ingredients: order.ingredients.map((oi) => ({
         id: oi.ingredient.id,
         name: oi.ingredient.name,
       })),
@@ -155,10 +158,13 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const confirmOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const confirmOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const orderId = parseInt(req.params.id);
-
+    const orderId = parseInt(req.params.id, 10);
     if (isNaN(orderId)) {
       res.status(400).json({ error: 'Invalid order ID' });
       return;
@@ -169,9 +175,7 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
       data: { status: OrderStatus.CONFIRMED },
       include: {
         ingredients: {
-          include: {
-            ingredient: true,
-          },
+          include: { ingredient: true },
         },
       },
     });
@@ -182,11 +186,14 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
       status: order.status,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-      ingredients: order.ingredients.map(oi => ({
+      ingredients: order.ingredients.map((oi) => ({
         id: oi.ingredient.id,
         name: oi.ingredient.name,
       })),
     };
+
+    const io = req.app.get('io') as import('socket.io').Server;
+    io.emit('orderConfirmed', response);
 
     res.json(response);
   } catch (error) {
@@ -194,10 +201,13 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const markOrderReady = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const markOrderReady = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const orderId = parseInt(req.params.id);
-
+    const orderId = parseInt(req.params.id, 10);
     if (isNaN(orderId)) {
       res.status(400).json({ error: 'Invalid order ID' });
       return;
@@ -208,9 +218,7 @@ export const markOrderReady = async (req: Request, res: Response, next: NextFunc
       data: { status: OrderStatus.READY },
       include: {
         ingredients: {
-          include: {
-            ingredient: true,
-          },
+          include: { ingredient: true },
         },
       },
     });
@@ -221,14 +229,19 @@ export const markOrderReady = async (req: Request, res: Response, next: NextFunc
       status: order.status,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-      ingredients: order.ingredients.map(oi => ({
+      ingredients: order.ingredients.map((oi) => ({
         id: oi.ingredient.id,
         name: oi.ingredient.name,
       })),
     };
+
+    // — Emit orderReady event
+    const io = req.app.get('io') as import('socket.io').Server;
+    io.emit('orderReady', response);
 
     res.json(response);
   } catch (error) {
     next(error);
   }
 };
+

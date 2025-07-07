@@ -12,8 +12,8 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useOrdersStore } from "../../stores/useOrdersStore";
 import { WaiterStackParamList } from "../../navigation/SignedInNavigation/WaiterRoutes";
-import useSocket from "../../providers/hooks/useSocket.ts";
-import useSocketEventListener from "../../hooks/useSocketEventListener.ts";
+import useSocket from "../../providers/hooks/useSocket";
+import useSocketEventListener from "../../hooks/useSocketEventListener";
 
 type Props = NativeStackScreenProps<WaiterStackParamList, "NewOrder">;
 
