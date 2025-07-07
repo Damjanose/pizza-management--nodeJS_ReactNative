@@ -13,7 +13,6 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Order, useOrdersStore } from "../../stores/useOrdersStore";
-import useAuth from "../../providers/hooks/useAuth.ts";
 
 type WaiterStackParamList = {
   WaiterHome: undefined;
@@ -26,7 +25,6 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 export default function WaiterHomeScreen() {
-  const { logout } = useAuth();
   const { orders, loading, error, fetchOrders } = useOrdersStore();
   const navigation = useNavigation<NavigationProp>();
 
@@ -34,7 +32,6 @@ export default function WaiterHomeScreen() {
     fetchOrders();
   }, [fetchOrders]);
 
-  // Show full-screen spinner only on initial load
   if (loading && orders.length === 0) {
     return (
       <SafeAreaView style={styles.center}>
@@ -46,9 +43,6 @@ export default function WaiterHomeScreen() {
   if (error && orders.length === 0) {
     return (
       <SafeAreaView style={styles.center}>
-        <TouchableOpacity onPress={logout}>
-          <Text>Logout</Text>
-        </TouchableOpacity>
         <Text style={styles.error}>Error: {error}</Text>
       </SafeAreaView>
     );

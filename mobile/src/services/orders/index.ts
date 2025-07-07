@@ -20,7 +20,7 @@ export const OrdersService = {
     return APIClient().post("/ingredients", name);
   },
   getAllIngredients() {
-    return APIClient().post("/ingredients");
+    return APIClient().get("/ingredients");
   },
 };
 
