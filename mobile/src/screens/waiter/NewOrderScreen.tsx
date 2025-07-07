@@ -12,8 +12,8 @@ import {
   View,
 } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { WaiterStackParamList } from "../../navigation/WaiterRoutes";
 import { useOrdersStore } from "../../stores/useOrdersStore";
+import { WaiterStackParamList } from "../../navigation/SignedInNavigation/WaiterRoutes";
 
 type Props = NativeStackScreenProps<WaiterStackParamList, "NewOrder">;
 
@@ -24,7 +24,7 @@ export default function NewOrderScreen({ navigation }: Props) {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
-    fetchIngredients();
+    fetchIngredients().catch(console.error);
   }, [fetchIngredients]);
 
   const toggle = (id: number) => {
