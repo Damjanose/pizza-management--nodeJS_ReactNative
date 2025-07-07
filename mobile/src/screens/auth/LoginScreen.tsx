@@ -14,11 +14,13 @@ import {
 } from "react-native";
 import useAuth from "../../providers/hooks/useAuth";
 import styles from "./LoginScreen.styles";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 export default function LoginScreen() {
   const { login, error, loading } = useAuth();
   const [name, setName] = useState("cook"); // waiter
   const [pass, setPass] = useState("cook"); // waiter
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => await login(name, pass);
 
@@ -56,8 +58,20 @@ export default function LoginScreen() {
                 onChangeText={setPass}
                 placeholder="Password"
                 style={styles.input}
-                secureTextEntry
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                autoCorrect={false}
               />
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => setShowPassword((v) => !v)}
+              >
+                <MaterialIcons
+                  name={showPassword ? "visibility-off" : "visibility"}
+                  size={24}
+                  color="#666"
+                />
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity
