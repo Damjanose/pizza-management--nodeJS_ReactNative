@@ -22,15 +22,15 @@ axiosInstance.interceptors.request.use(
         (config.headers as AxiosRequestHeaders)["x-role"] = role;
       }
 
-      // // Optional: log cURL
-      // const method = config.method?.toUpperCase() || "GET";
-      // const url = config.baseURL + config.url;
-      // const headers = config.headers || {};
-      // const data = config.data ? `-d '${JSON.stringify(config.data)}'` : "";
-      // const headerString = Object.entries(headers)
-      //   .map(([k, v]) => `-H "${k}: ${v}"`)
-      //   .join(" ");
-      //
+      const method = config.method?.toUpperCase() || "GET";
+      // @ts-ignore
+      const url = config.baseURL + config.url;
+      const headers = config.headers || {};
+      const data = config.data ? `-d '${JSON.stringify(config.data)}'` : "";
+      const headerString = Object.entries(headers)
+        .map(([k, v]) => `-H "${k}: ${v}"`)
+        .join(" ");
+
       // console.log(`curl -X ${method} ${headerString} "${url}" ${data}`);
 
       return config;
