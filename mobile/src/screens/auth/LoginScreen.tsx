@@ -20,9 +20,7 @@ export default function LoginScreen() {
   const [name, setName] = useState("cook"); // waiter
   const [pass, setPass] = useState("cook"); // waiter
 
-  const handleLogin = async () => {
-    await login(name, pass);
-  };
+  const handleLogin = async () => await login(name, pass);
 
   return (
     <SafeAreaView style={styles.safeArea}>
