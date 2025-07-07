@@ -6,7 +6,7 @@ import {
 } from "@react-navigation/drawer";
 import { View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import useAuth from "../../providers/hooks/useAuth.ts";
+import useAuth from "../../providers/hooks/useAuth";
 import styles from "./CustomDrawerContent.styles";
 
 const CustomDrawerContent = (props: any) => {

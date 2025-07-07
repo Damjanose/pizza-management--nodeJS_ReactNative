@@ -3,7 +3,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import NewsScreen from "../../screens/news/NewsScreen";
 import HomeScreen from "../../screens/home/HomeScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import CustomDrawerContent from "../../components/DrawerContent/CustomDrawerContent.tsx";
+import CustomDrawerContent from "../../components/DrawerContent/CustomDrawerContent";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export type DrawerParamList = {

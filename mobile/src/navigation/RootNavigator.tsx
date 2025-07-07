@@ -2,9 +2,9 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import useAuth from "../providers/hooks/useAuth";
 import { NavigationContainer } from "@react-navigation/native";
-import SignedInRoutes from "./SignedInNavigation/SignedInRoutes.tsx";
-import LoginScreen from "../screens/auth/LoginScreen.tsx";
-import LoginSplash from "../screens/splash/Login.splash.tsx";
+import SignedInRoutes from "./SignedInNavigation/SignedInRoutes";
+import LoginScreen from "../screens/auth/LoginScreen";
+import LoginSplash from "../screens/splash/Login.splash";
 
 const RootStack = createNativeStackNavigator<{
   Login: undefined;
