@@ -36,13 +36,10 @@ export default StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     paddingHorizontal: 10,
-    justifyContent: "center",
   },
   input: {
-    flex: 1,
+    height: 50,
     color: "#333",
-    paddingHorizontal: 10,
-    height: "100%",
   },
   button: {
     backgroundColor: "#007BFF",
@@ -59,15 +56,5 @@ export default StyleSheet.create({
   textErr: {
     marginBottom: 10,
     color: "red",
-  },
-  inputWithIcon: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingRight: 40, // space for the icon
-    height: "100%",
-  },
-  iconButton: {
-    position: "absolute",
-    right: 10,
   },
 });
