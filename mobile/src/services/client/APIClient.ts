@@ -51,22 +51,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.config) {
-      console.warn("❌ [Axios CURL on Error] ", buildCurl(error.config));
-    }
-    if (error.response) {
-      console.warn(
-        `❌ [Error Response] ${error.response.status}`,
-        error.response.data
-      );
-    } else if (error.request) {
-      console.warn(
-        "❌ [No Response] request sent but no response received",
-        error.request
-      );
-    } else {
-      console.error("❌ [Setup Error]", error.message);
-    }
+    console.error("❌ [Setup Error]", error.message);
     return Promise.reject(error);
   }
 );

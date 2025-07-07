@@ -1,4 +1,3 @@
-// LoginScreen.styles.ts
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -7,10 +6,10 @@ export default StyleSheet.create({
     backgroundColor: "#F5FCFC",
   },
   container: {
-    flex: 1, // fill the whole area
+    flex: 1,
   },
   inner: {
-    flex: 1, // inner takes full height too
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,

@@ -29,8 +29,6 @@ export const AuthProvider = ({ children }: any) => {
         await AsyncStorage.setItem("role", role);
         setIsSignedIn(true);
       }
-
-      console.log(data, "111");
     } catch (e: any) {
       setError("login error");
       console.error(e);
