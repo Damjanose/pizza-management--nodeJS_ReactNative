@@ -14,7 +14,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useOrdersStore } from "../../stores/useOrdersStore";
 import { WaiterStackParamList } from "../../navigation/SignedInNavigation/WaiterRoutes";
 import useSocket from "../../providers/hooks/useSocket.ts";
-import { useEventOn } from "../../utils/useEventOn.ts";
 
 type Props = NativeStackScreenProps<WaiterStackParamList, "EditOrder">;
 
@@ -64,13 +63,6 @@ export default function EditOrderScreen({ route, navigation }: Props) {
     });
     navigation.goBack();
   };
-
-  useEventOn({
-    event: "newOrder",
-    handler: () => {
-      console.log("11");
-    },
-  });
 
   if (initializing) {
     return (
