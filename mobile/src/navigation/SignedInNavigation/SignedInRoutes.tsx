@@ -1,16 +1,13 @@
 import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DrawerNavigator from "./DrawerNavigator";
+import WaiterRoutes from "./WaiterRoutes";
+import CookRoutes from "./CookRoutes";
+import useAuth from "../../providers/hooks/useAuth";
 
-const Stack = createNativeStackNavigator();
+export default function SignedInRoutes() {
+  const { role } = useAuth();
 
-const SignedInRoutes = () => (
-  <Stack.Navigator
-    initialRouteName="Drawer"
-    screenOptions={{ headerShown: false, animation: "fade" }}
-  >
-    <Stack.Screen name="Drawer" component={DrawerNavigator} />
-  </Stack.Navigator>
-);
+  if (role === "waiter") return <WaiterRoutes />;
+  if (role === "cook") return <CookRoutes />;
 
-export default SignedInRoutes;
+  return null;
+}

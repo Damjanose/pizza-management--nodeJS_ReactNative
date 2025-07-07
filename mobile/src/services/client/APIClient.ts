@@ -43,13 +43,7 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    console.log(
-      `✅ [${response.status}] ${response.config.url}`,
-      "– use the same curl above to reproduce"
-    );
-    return response;
-  },
+  (response) => response,
   (error) => {
     console.error("❌ [Setup Error]", error.message);
     return Promise.reject(error);
