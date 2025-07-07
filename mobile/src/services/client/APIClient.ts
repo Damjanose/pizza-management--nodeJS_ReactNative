@@ -35,7 +35,7 @@ axiosInstance.interceptors.request.use(
     if (role && config.headers) {
       (config.headers as Record<string, string>)["x-role"] = role;
     }
-    console.log(buildCurl(config));
+    // console.log(buildCurl(config));
     return config;
   },
   (error) => Promise.reject(error)

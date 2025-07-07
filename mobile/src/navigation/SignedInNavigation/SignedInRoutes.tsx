@@ -1,13 +1,27 @@
 import React from "react";
+import { ActivityIndicator, View } from "react-native";
+import useAuth from "../../providers/hooks/useAuth";
 import WaiterRoutes from "./WaiterRoutes";
 import CookRoutes from "./CookRoutes";
-import useAuth from "../../providers/hooks/useAuth";
 
 export default function SignedInRoutes() {
-  const { role } = useAuth();
+  const { role, isSigningIn } = useAuth();
 
-  if (role === "waiter") return <WaiterRoutes />;
-  if (role === "cooker") return <CookRoutes />;
+  if (isSigningIn) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (role === "waiter") {
+    return <WaiterRoutes />;
+  }
+
+  if (role === "cooker") {
+    return <CookRoutes />;
+  }
 
   return null;
 }
