@@ -1,3 +1,5 @@
+// src/navigation/WaiterRoutes.tsx
+
 import React from "react";
 import {
   createNativeStackNavigator,
@@ -10,11 +12,13 @@ import useAuth from "../../providers/hooks/useAuth";
 import WaiterHomeScreen from "../../screens/waiter/WaiterHomeScreen";
 import TableDetailsScreen from "../../screens/waiter/TableDetailsScreen";
 import NewOrderScreen from "../../screens/waiter/NewOrderScreen";
+import EditOrderScreen from "../../screens/waiter/EditOrderScreen";
 
 export type WaiterStackParamList = {
   WaiterHome: undefined;
   TableDetails: { orderId: number };
   NewOrder: undefined;
+  EditOrder: { orderId: number };
 };
 
 const Stack = createNativeStackNavigator<WaiterStackParamList>();
@@ -22,9 +26,7 @@ const Stack = createNativeStackNavigator<WaiterStackParamList>();
 const baseOptions: NativeStackNavigationOptions = {
   headerShown: true,
   headerTitleAlign: "center",
-  headerStyle: {
-    backgroundColor: "#fff",
-  },
+  headerStyle: { backgroundColor: "#fff" },
   headerShadowVisible: false,
   animation: "fade",
 };
@@ -57,20 +59,28 @@ export default function WaiterRoutes() {
           ),
         })}
       />
+
       <Stack.Screen
         name="TableDetails"
         component={TableDetailsScreen}
         options={({ route }) => ({
           title: `Table ${route.params.orderId}`,
-          headerLeft: () => <LogoutButton />,
         })}
       />
+
       <Stack.Screen
         name="NewOrder"
         component={NewOrderScreen}
         options={{
           title: "New Order",
-          headerLeft: () => <LogoutButton />,
+        }}
+      />
+
+      <Stack.Screen
+        name="EditOrder"
+        component={EditOrderScreen}
+        options={{
+          title: "Edit Order",
         }}
       />
     </Stack.Navigator>

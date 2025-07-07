@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Button,
   SafeAreaView,
   StyleSheet,
@@ -13,11 +12,7 @@ import {
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Order, useOrdersStore } from "../../stores/useOrdersStore";
-
-type WaiterStackParamList = {
-  WaiterHome: undefined;
-  TableDetails: { orderId: number };
-};
+import { WaiterStackParamList } from "../../navigation/SignedInNavigation/WaiterRoutes";
 
 type DetailsRoute = RouteProp<WaiterStackParamList, "TableDetails">;
 type DetailsNav = NativeStackNavigationProp<
@@ -28,31 +23,13 @@ type DetailsNav = NativeStackNavigationProp<
 export default function TableDetailsScreen() {
   const { params } = useRoute<DetailsRoute>();
   const navigation = useNavigation<DetailsNav>();
-  const { orders, loading, error, fetchOrders, confirmOrder, readyOrder } =
-    useOrdersStore();
+  const { orders, loading, error, fetchOrders } = useOrdersStore();
 
   const order = orders.find((o: Order) => o.id === params.orderId);
+
   useEffect(() => {
     if (!order) fetchOrders();
   }, [order, fetchOrders]);
-
-  const handleConfirm = async () => {
-    try {
-      await confirmOrder(params.orderId);
-      Alert.alert("Success", "Order confirmed");
-    } catch (e: any) {
-      Alert.alert("Error", e.message);
-    }
-  };
-
-  const handleReady = async () => {
-    try {
-      await readyOrder(params.orderId);
-      Alert.alert("Success", "Order marked ready");
-    } catch (e: any) {
-      Alert.alert("Error", e.message);
-    }
-  };
 
   if (loading || !order) {
     return (
@@ -99,12 +76,12 @@ export default function TableDetailsScreen() {
       </View>
 
       <View style={styles.buttons}>
-        {order.status === "WAITING" && (
-          <Button title="Confirm Order" onPress={handleConfirm} />
-        )}
-        {order.status === "CONFIRMED" && (
-          <Button title="Mark Ready" onPress={handleReady} />
-        )}
+        <Button
+          title="Edit Order"
+          onPress={() =>
+            navigation.navigate("EditOrder", { orderId: order.id })
+          }
+        />
       </View>
 
       <View style={styles.buttons}>
