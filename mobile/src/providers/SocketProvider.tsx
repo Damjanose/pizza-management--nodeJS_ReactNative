@@ -1,24 +1,23 @@
 import React, { createContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import axios from "axios";
 import { ChildrenProp, TSocketContext } from "./types";
 
-// to listen
-// SOCKET_URL='http://89.116.236.24:3000/test'
-// to emit
-// SOCKET_URL_TRIGGER_EVENT='http://89.116.236.24:3000/trigger-event'
+const SOCKET_URL = "http://89.116.236.24:3000/pizza";
+const SOCKET_URL_TRIGGER_EVENT = "http://89.116.236.24:3000/trigger-event";
+const SOCKET_NAMESPACE = "/pizza";
 
 export const SocketContext = createContext<TSocketContext | null>(null);
 
 export const SocketProvider = ({ children }: ChildrenProp) => {
-  const socketUri = "http://89.116.236.24:3000/pizza";
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [isLoggingEnabled, setIsLoggingEnabled] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   const connectSocket = () => {
-    if (socketUri && !isLoggingEnabled) {
-      const newSocket = io(socketUri);
-      setIsLoggingEnabled(true);
+    if (!isConnected) {
+      const newSocket = io(SOCKET_URL);
       setSocket(newSocket);
+      setIsConnected(true);
     }
   };
 
@@ -26,24 +25,35 @@ export const SocketProvider = ({ children }: ChildrenProp) => {
     if (socket) {
       socket.disconnect();
       setSocket(null);
+      setIsConnected(false);
     }
   };
 
-  const emitEvent = (eventName: string, data?: any) => {
-    if (socket) {
-      socket.emit(eventName, data);
+  const emitEvent = async (eventName: string, data?: any) => {
+    try {
+      const payload = {
+        event: eventName,
+        namespace: SOCKET_NAMESPACE,
+        message: data,
+      };
+
+      const response = await axios.post(SOCKET_URL_TRIGGER_EVENT, payload);
+      console.log("✅ Event emitted successfully:", response.data);
+    } catch (error: any) {
+      console.error(
+        "❌ Emit socket error:",
+        error.response?.data || error.message
+      );
     }
   };
 
   useEffect(() => {
-    if (socketUri) {
-      connectSocket();
-    }
+    connectSocket();
 
     return () => {
       disconnectSocket();
     };
-  }, [socketUri]);
+  }, []);
 
   return (
     <SocketContext.Provider

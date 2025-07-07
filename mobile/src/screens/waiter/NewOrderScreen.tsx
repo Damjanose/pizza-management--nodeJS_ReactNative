@@ -13,7 +13,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useOrdersStore } from "../../stores/useOrdersStore";
 import { WaiterStackParamList } from "../../navigation/SignedInNavigation/WaiterRoutes";
 import useSocket from "../../providers/hooks/useSocket";
-import useSocketEventListener from "../../hooks/useSocketEventListener";
 
 type Props = NativeStackScreenProps<WaiterStackParamList, "NewOrder">;
 
@@ -42,13 +41,6 @@ export default function NewOrderScreen({ navigation }: Props) {
     });
     navigation.goBack();
   };
-
-  useSocketEventListener({
-    event: "newOrder",
-    handler: async (data: { table: number; ingredients: Array<number> }) => {
-      console.log(data, "a");
-    },
-  });
 
   const renderIngredient = ({
     item,
