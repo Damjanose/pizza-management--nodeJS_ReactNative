@@ -27,3 +27,28 @@ mobile/.gradle/
 /mobile/android/.gradle/
 mobile/android/.gradle
 mobile/android/.gradle/*
+
+
+# ── Node modules & lockfiles ──
+**/node_modules/
+**/package-lock.json
+
+# ── Gradle / Android build artifacts ──
+**/.gradle/                    # all .gradle dirs
+**/build/                      # any build/ dirs
+**/local.properties            # local SDK path
+**/*.hprof                     # Android heap dumps
+**/.cxx/                       # NDK build stuff
+**/app/release/                # old apk outputs
+
+# keystores
+**/*.keystore
+!**/debug.keystore             # keep the debug key
+
+# ── Xcode / iOS ──
+**/Pods/
+**/Podfile.lock
+
+# ── IDE files ──
+**/.idea/
+**/*.iml
