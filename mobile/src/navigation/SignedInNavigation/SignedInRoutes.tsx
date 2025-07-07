@@ -7,7 +7,7 @@ export default function SignedInRoutes() {
   const { role } = useAuth();
 
   if (role === "waiter") return <WaiterRoutes />;
-  if (role === "cook") return <CookRoutes />;
+  if (role === "cooker") return <CookRoutes />;
 
   return null;
 }

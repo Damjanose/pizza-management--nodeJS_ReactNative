@@ -1,5 +1,3 @@
-// src/navigation/WaiterRoutes.tsx
-
 import React from "react";
 import {
   createNativeStackNavigator,

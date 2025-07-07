@@ -1,5 +1,3 @@
-// src/screens/waiter/WaiterHomeScreen.tsx
-
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,

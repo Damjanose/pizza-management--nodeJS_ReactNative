@@ -1,4 +1,3 @@
-// src/stores/useOrdersStore.ts
 import { create } from "zustand";
 import { OrdersService } from "../services/orders";
 

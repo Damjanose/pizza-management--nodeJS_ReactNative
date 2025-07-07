@@ -17,8 +17,8 @@ import styles from "./LoginScreen.styles";
 
 export default function LoginScreen() {
   const { login, error, loading } = useAuth();
-  const [name, setName] = useState("waiter"); // cook
-  const [pass, setPass] = useState("waiter"); // cook
+  const [name, setName] = useState("cook"); // waiter
+  const [pass, setPass] = useState("cook"); // waiter
 
   const handleLogin = async () => {
     await login(name, pass);

@@ -1,5 +1,3 @@
-// src/screens/waiter/NewOrderScreen.tsx
-
 import React, { useEffect, useState } from "react";
 import {
   Button,

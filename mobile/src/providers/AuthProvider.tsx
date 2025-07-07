@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import { AuthService } from "../services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ROLE } from "../constants/auth.ts";
+import { ROLE } from "../constants/auth";
 
 interface AuthType {
   login: (name: string, pass: string) => Promise<void>;

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ROLE } from "../../constants/auth.ts";
+import { ROLE } from "../../constants/auth";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL || "http://192.168.0.175:3000/api";

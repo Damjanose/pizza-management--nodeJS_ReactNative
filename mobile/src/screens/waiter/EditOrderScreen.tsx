@@ -1,5 +1,3 @@
-// src/screens/waiter/EditOrderScreen.tsx
-
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
