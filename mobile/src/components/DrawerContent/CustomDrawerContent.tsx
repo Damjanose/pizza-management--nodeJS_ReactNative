@@ -4,13 +4,13 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { Image, Text, View } from "react-native";
+import { View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import useAuth from "../../providers/hooks/useAuth.ts";
 import styles from "./CustomDrawerContent.styles";
 
 const CustomDrawerContent = (props: any) => {
-  const { logout, userData } = useAuth();
+  const { logout } = useAuth();
   return (
     <View style={styles.drawerView}>
       <DrawerContentScrollView
@@ -18,10 +18,6 @@ const CustomDrawerContent = (props: any) => {
         scrollEnabled={false}
         contentContainerStyle={styles.contentContainerStyle}
       >
-        <View style={styles.drawerImg}>
-          <Image source={{ uri: userData?.image }} style={styles.img} />
-          <Text style={styles.text}>{userData?.username}</Text>
-        </View>
         <DrawerItemList {...props}></DrawerItemList>
       </DrawerContentScrollView>
       <View style={styles.footer}>

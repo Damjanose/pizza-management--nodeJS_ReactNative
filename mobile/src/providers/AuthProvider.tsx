@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthType {
   login: (name: string, pass: string) => Promise<void>;
+  logout: () => Promise<void>;
   loading: boolean;
   isSignedIn: boolean;
   isSigningIn: boolean;
@@ -38,6 +39,10 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
+  const logout = async () => {
+    await AsyncStorage.clear();
+  };
+
   const isLoggedInCheck = useCallback(async () => {
     setIsSigningIn(true);
     const role = await AsyncStorage.getItem("role");
@@ -62,6 +67,7 @@ export const AuthProvider = ({ children }: any) => {
     <AuthContext.Provider
       value={{
         login,
+        logout,
         loading,
         error,
         isSignedIn,
