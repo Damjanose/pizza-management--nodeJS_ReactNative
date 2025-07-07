@@ -13,6 +13,7 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useOrdersStore } from "../../stores/useOrdersStore";
 import { WaiterStackParamList } from "../../navigation/SignedInNavigation/WaiterRoutes";
+import useSocket from "../../providers/hooks/useSocket.ts";
 
 type Props = NativeStackScreenProps<WaiterStackParamList, "EditOrder">;
 
@@ -28,6 +29,7 @@ export default function EditOrderScreen({ route, navigation }: Props) {
     error,
   } = useOrdersStore();
 
+  const { emitEvent } = useSocket();
   const [tableNumber, setTableNumber] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [initializing, setInitializing] = useState(true);
@@ -55,6 +57,10 @@ export default function EditOrderScreen({ route, navigation }: Props) {
 
   const handleSave = async () => {
     await editOrder(orderId, Number(tableNumber), selectedIds);
+    emitEvent("newOrder", {
+      table: Number(tableNumber),
+      ingredients: selectedIds,
+    });
     navigation.goBack();
   };
 

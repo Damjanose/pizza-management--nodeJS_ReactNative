@@ -12,10 +12,12 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useOrdersStore } from "../../stores/useOrdersStore";
 import { WaiterStackParamList } from "../../navigation/SignedInNavigation/WaiterRoutes";
+import useSocket from "../../providers/hooks/useSocket";
 
 type Props = NativeStackScreenProps<WaiterStackParamList, "NewOrder">;
 
 export default function NewOrderScreen({ navigation }: Props) {
+  const { emitEvent } = useSocket();
   const { ingredients, fetchIngredients, createOrder, loading } =
     useOrdersStore();
   const [tableNumber, setTableNumber] = useState<string>("");
@@ -33,6 +35,10 @@ export default function NewOrderScreen({ navigation }: Props) {
 
   const submit = async () => {
     await createOrder(Number(tableNumber), selectedIds);
+    emitEvent("newOrder", {
+      table: Number(tableNumber),
+      ingredients: selectedIds,
+    });
     navigation.goBack();
   };
 

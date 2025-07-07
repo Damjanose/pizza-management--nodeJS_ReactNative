@@ -27,7 +27,7 @@ export default function WaiterHomeScreen() {
   const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
-    fetchOrders();
+    fetchOrders().catch(console.error);
   }, [fetchOrders]);
 
   if (loading && orders.length === 0) {
