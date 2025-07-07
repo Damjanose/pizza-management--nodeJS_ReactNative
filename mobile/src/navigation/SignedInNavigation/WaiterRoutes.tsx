@@ -1,5 +1,3 @@
-// src/navigation/WaiterRoutes.tsx
-
 import React from "react";
 import {
   createNativeStackNavigator,
@@ -7,6 +5,7 @@ import {
 } from "@react-navigation/native-stack";
 import { TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import useAuth from "../../providers/hooks/useAuth";
 
 import WaiterHomeScreen from "../../screens/waiter/WaiterHomeScreen";
 import TableDetailsScreen from "../../screens/waiter/TableDetailsScreen";
@@ -20,7 +19,6 @@ export type WaiterStackParamList = {
 
 const Stack = createNativeStackNavigator<WaiterStackParamList>();
 
-// **Explicitly type** these options so TS knows headerTitleAlign is "center" not just string
 const baseOptions: NativeStackNavigationOptions = {
   headerShown: true,
   headerTitleAlign: "center",
@@ -31,6 +29,15 @@ const baseOptions: NativeStackNavigationOptions = {
   animation: "fade",
 };
 
+const LogoutButton: React.FC = () => {
+  const { logout } = useAuth();
+  return (
+    <TouchableOpacity onPress={logout} style={{ paddingHorizontal: 16 }}>
+      <MaterialIcons name="logout" size={24} />
+    </TouchableOpacity>
+  );
+};
+
 export default function WaiterRoutes() {
   return (
     <Stack.Navigator initialRouteName="WaiterHome" screenOptions={baseOptions}>
@@ -39,6 +46,7 @@ export default function WaiterRoutes() {
         component={WaiterHomeScreen}
         options={({ navigation }) => ({
           title: "Your Tables",
+          headerLeft: () => <LogoutButton />,
           headerRight: () => (
             <TouchableOpacity
               onPress={() => navigation.navigate("NewOrder")}
@@ -49,19 +57,21 @@ export default function WaiterRoutes() {
           ),
         })}
       />
-
       <Stack.Screen
         name="TableDetails"
         component={TableDetailsScreen}
         options={({ route }) => ({
           title: `Table ${route.params.orderId}`,
+          headerLeft: () => <LogoutButton />,
         })}
       />
-
       <Stack.Screen
         name="NewOrder"
         component={NewOrderScreen}
-        options={{ title: "New Order" }}
+        options={{
+          title: "New Order",
+          headerLeft: () => <LogoutButton />,
+        }}
       />
     </Stack.Navigator>
   );
