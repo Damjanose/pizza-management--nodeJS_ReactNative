@@ -1,3 +1,4 @@
+// LoginScreen.tsx
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -12,15 +13,19 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import useAuth from "../../providers/hooks/useAuth";
 import styles from "./LoginScreen.styles";
 
 export default function LoginScreen() {
   const { login, error, loading } = useAuth();
-  const [name, setName] = useState("cook"); // waiter
-  const [pass, setPass] = useState("cook"); // waiter
+  const [name, setName] = useState(""); // or "cook/waiter"
+  const [pass, setPass] = useState(""); // or "cook/waiter"
+  const [secure, setSecure] = useState(true);
 
-  const handleLogin = async () => await login(name, pass);
+  const handleLogin = async () => {
+    await login(name, pass);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -47,6 +52,7 @@ export default function LoginScreen() {
                 style={styles.input}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                placeholderTextColor="#999"
               />
             </View>
 
@@ -56,8 +62,21 @@ export default function LoginScreen() {
                 onChangeText={setPass}
                 placeholder="Password"
                 style={styles.input}
-                secureTextEntry
+                secureTextEntry={secure}
+                autoCapitalize="none"
+                placeholderTextColor="#999"
               />
+              <TouchableOpacity
+                hitSlop={20}
+                onPress={() => setSecure((prev) => !prev)}
+                style={styles.icon}
+              >
+                <Ionicons
+                  name={secure ? "eye-off" : "eye"}
+                  size={24}
+                  color="#666"
+                />
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity

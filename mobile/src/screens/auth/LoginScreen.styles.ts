@@ -1,3 +1,4 @@
+// LoginScreen.styles.ts
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -36,10 +37,16 @@ export default StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
   },
   input: {
+    flex: 1,
     height: 50,
     color: "#333",
+  },
+  icon: {
+    marginLeft: 10,
   },
   button: {
     backgroundColor: "#007BFF",

@@ -2,6 +2,9 @@ import React, { createContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { ChildrenProp, TSocketContext } from "./types";
 
+// SOCKET_URL='http://89.116.236.24:3000/test'    to listen
+// SOCKET_URL_TRIGGER_EVENT='http://89.116.236.24:3000/trigger-event'  to emit
+
 export const SocketContext = createContext<TSocketContext | null>(null);
 
 export const SocketProvider = ({ children }: ChildrenProp) => {
