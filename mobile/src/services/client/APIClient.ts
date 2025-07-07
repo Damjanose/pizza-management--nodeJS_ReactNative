@@ -31,7 +31,7 @@ axiosInstance.interceptors.request.use(
         .map(([k, v]) => `-H "${k}: ${v}"`)
         .join(" ");
 
-      // console.log(`curl -X ${method} ${headerString} "${url}" ${data}`);
+      console.log(`curl -X ${method} ${headerString} "${url}" ${data}`);
 
       return config;
     } catch (error) {
