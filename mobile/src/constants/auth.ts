@@ -1,1 +1,1 @@
-export const ACCESS_TOKEN = "@AccessToken";
+export const ROLE = "@Role";

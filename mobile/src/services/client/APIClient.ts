@@ -1,23 +1,23 @@
-import axios, {
-  AxiosInstance,
-  AxiosRequestHeaders,
-  InternalAxiosRequestConfig,
-} from "axios";
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ROLE } from "../../constants/auth.ts";
 
 const BASE_URL =
   process.env.REACT_APP_BASE_URL || "http://192.168.0.175:3000/api";
 
 function buildCurl(config: InternalAxiosRequestConfig): string {
   const method = (config.method || "get").toUpperCase();
-  const url = (config.baseURL || "") + (config.url || "");
+  const url = `${config.baseURL || ""}${config.url || ""}`;
   const headers = config.headers
     ? Object.entries(config.headers as Record<string, string>)
         .map(([k, v]) => `-H "${k}: ${v}"`)
         .join(" ")
     : "";
-  const data = config.data ? `-d '${JSON.stringify(config.data)}'` : "";
-  return `curl -X ${method} ${headers} "${url}" ${data}`;
+  const data =
+    config.data && typeof config.data === "object"
+      ? `--data '${JSON.stringify(config.data)}'`
+      : "";
+  return `curl -X ${method} "${url}" ${headers} ${data}`.trim();
 }
 
 const axiosInstance: AxiosInstance = axios.create({
@@ -30,24 +30,15 @@ const axiosInstance: AxiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  async (config) => {
-    const role = await AsyncStorage.getItem("user_role");
+  async (config: InternalAxiosRequestConfig) => {
+    const role = await AsyncStorage.getItem(ROLE);
     if (role && config.headers) {
-      (config.headers as AxiosRequestHeaders)["x-role"] = role;
+      (config.headers as Record<string, string>)["x-role"] = role;
     }
-
     console.log(buildCurl(config));
     return config;
   },
-  (err) => Promise.reject(err)
-);
-
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error("❌ [Setup Error]", error.message);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default (): AxiosInstance => axiosInstance;

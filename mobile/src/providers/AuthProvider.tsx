@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import { AuthService } from "../services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ROLE } from "../constants/auth.ts";
 
 interface AuthType {
   login: (name: string, pass: string) => Promise<void>;
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }: any) => {
       const { role } = data;
 
       if (role) {
-        await AsyncStorage.setItem("role", role);
+        await AsyncStorage.setItem(ROLE, role);
         setRole(role);
         setIsSignedIn(true);
       }
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }: any) => {
 
   const isLoggedInCheck = useCallback(async () => {
     setIsSigningIn(true);
-    const role = await AsyncStorage.getItem("role");
+    const role = await AsyncStorage.getItem(ROLE);
     try {
       if (role) {
         setRole(role);
