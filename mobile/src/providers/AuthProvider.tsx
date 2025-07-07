@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import { AuthService } from "../services/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ROLE } from "../constants/auth";
 
 interface AuthType {
   login: (name: string, pass: string) => Promise<void>;
@@ -9,6 +10,7 @@ interface AuthType {
   isSignedIn: boolean;
   isSigningIn: boolean;
   error: string | null;
+  role: string;
 }
 
 export const AuthContext = createContext<AuthType | null>(null);
@@ -18,6 +20,7 @@ export const AuthProvider = ({ children }: any) => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState("");
 
   const login = async (name: string, pass: string) => {
     setLoading(true);
@@ -26,7 +29,8 @@ export const AuthProvider = ({ children }: any) => {
       const { role } = data;
 
       if (role) {
-        await AsyncStorage.setItem("role", role);
+        await AsyncStorage.setItem(ROLE, role);
+        setRole(role);
         setIsSignedIn(true);
       }
     } catch (e: any) {
@@ -40,13 +44,17 @@ export const AuthProvider = ({ children }: any) => {
   const logout = async () => {
     await AsyncStorage.clear();
     setIsSignedIn(false);
+    setRole("");
   };
 
   const isLoggedInCheck = useCallback(async () => {
     setIsSigningIn(true);
-    const role = await AsyncStorage.getItem("role");
+    const role = await AsyncStorage.getItem(ROLE);
     try {
-      if (role) setIsSignedIn(true);
+      if (role) {
+        setRole(role);
+        setIsSignedIn(true);
+      }
     } catch (err) {
       console.error("Auth check failed:", err);
       setIsSignedIn(false);
@@ -71,6 +79,7 @@ export const AuthProvider = ({ children }: any) => {
         error,
         isSignedIn,
         isSigningIn,
+        role,
       }}
     >
       {children}

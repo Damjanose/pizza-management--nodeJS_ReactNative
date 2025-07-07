@@ -1,16 +1,27 @@
 import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DrawerNavigator from "./DrawerNavigator";
+import { ActivityIndicator, View } from "react-native";
+import useAuth from "../../providers/hooks/useAuth";
+import WaiterRoutes from "./WaiterRoutes";
+import CookRoutes from "./CookRoutes";
 
-const Stack = createNativeStackNavigator();
+export default function SignedInRoutes() {
+  const { role, isSigningIn } = useAuth();
 
-const SignedInRoutes = () => (
-  <Stack.Navigator
-    initialRouteName="Drawer"
-    screenOptions={{ headerShown: false, animation: "fade" }}
-  >
-    <Stack.Screen name="Drawer" component={DrawerNavigator} />
-  </Stack.Navigator>
-);
+  if (isSigningIn) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
-export default SignedInRoutes;
+  if (role === "waiter") {
+    return <WaiterRoutes />;
+  }
+
+  if (role === "cooker") {
+    return <CookRoutes />;
+  }
+
+  return null;
+}

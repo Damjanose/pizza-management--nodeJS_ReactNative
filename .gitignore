@@ -22,3 +22,6 @@ mobile/android/app/build/
 .idea/vcs.xml
 mobile/node_modules/.package-lock.json
 mobile/.gradle/
+
+**/.gradle/
+/mobile/android/.gradle/
