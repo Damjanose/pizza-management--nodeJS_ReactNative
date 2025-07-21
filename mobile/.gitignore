@@ -4,7 +4,7 @@
 
 # Xcode
 #
-build/
+mobile/build/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -24,23 +24,23 @@ DerivedData
 
 # Android/IntelliJ
 #
-android/build
-android/app/release
-android/.kotlin
-.idea
-.gradle
-local.properties
-*.iml
-*.hprof
-.cxx/
-*.keystore
-!debug.keystore
+mobile/android/build
+mobile/android/app/release
+mobile/android/.kotlin
+mobile/.idea
+mobile/.gradle
+mobile/local.properties
+mobile/*.iml
+mobile/*.hprof
+mobile/.cxx/
+mobile/*.keystore
+!mobile/debug.keystore
 
 # node.js
 #
-node_modules/
-npm-debug.log
-yarn-error.log
+mobile/node_modules/
+mobile/npm-debug.log
+mobile/yarn-error.log
 
 # fastlane
 #
@@ -76,7 +76,8 @@ yarn-error.log
 !.yarn/versions
 
 # lock files
-package-lock.json
-ios/Podfile.lock
-
-.env
+mobile/package-lock.json
+mobile/ios/Podfile.lock
+mobile/.env
+mobile/node_modules
+mobile/

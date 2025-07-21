@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }: any) => {
     await AsyncStorage.clear();
     setIsSignedIn(false);
     setRole("");
+    setError(null);
   };
 
   const isLoggedInCheck = useCallback(async () => {

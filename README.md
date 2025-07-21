@@ -1,106 +1,179 @@
-# 🍕 Pizza Store App
+# Pizza Store Management System
 
-A full-stack application for managing a pizza store, organized into two folders:
+A Node.js backend API built with Express, TypeScript, and PostgreSQL for managing pizza orders in a restaurant.
 
-- **`backend/`** — A Node.js + TypeScript API for handling authentication, orders, and kitchen workflows.
-- **`mobile/`** — A React Native app with role-based interfaces for waiters and cooks.
+## Features
+
+- **Role-based Authentication**: Static login system with two roles (waiter/cooker)
+- **Order Management**: Create, update, and track pizza orders through different statuses
+- **Ingredient Management**: Manage pizza ingredients and order compositions
+- **Status Workflow**: Orders flow through waiting → confirmed → ready states
+- **Role-based Permissions**: Different access levels for waiters and cookers
+
+---
+
+## App Screenshots & Flow
+
+### 1. Login
+
+![Login Screen](assets/images/login.png)
+
+---
+
+### 2. Waiter Flow
+
+#### a) List of Orders
+![Waiter Orders](assets/images/waiter/waiter_orders.png)
+
+#### b) Create New Order
+![Waiter Create Order](assets/images/waiter/waiter_createOrder.png)
+
+#### c) View Order
+![Waiter View Order](assets/images/waiter/waiter_viewOrder.png)
+
+#### d) Edit Order
+![Waiter Edit Order](assets/images/waiter/waiter_editOrder.png)
+
+---
+
+### 3. Cooker Flow
+
+#### a) Waiting Order (to be cooked)
+![Cooker Waiting Order](assets/images/cooker/cook_waitingOrder.png)
+
+#### b) Cooking Order (in progress)
+![Cooker Cooking Order](assets/images/cooker/cook_cookingOrder.png)
+
+#### c) Ready Order (finished cooking, ready to serve)
+![Cooker Ready Order](assets/images/cooker/cook_readyOrder.png)
+
+---
+
+## Flow Description
+
+- **Login:**
+  - Users log in as either a waiter or a cooker.
+
+- **Waiter:**
+  - Can view a list of all orders.
+  - Can create a new order by selecting ingredients and table number.
+  - Can view details of any order.
+  - Can edit orders that are still in the 'waiting' state.
+
+- **Cooker:**
+  - Sees orders in three states: waiting, cooking, and ready.
+  - By clicking the action button, the order moves from 'waiting' (to be cooked) → 'cooking' (in progress) → 'ready' (finished cooking, ready to serve).
 
 ---
 
 ## 📁 Project Structure
 
+```
+src/
+├── controllers/     # Route handlers
+├── routes/         # API route definitions
+├── middlewares/    # Authentication and error handling
+├── types/          # TypeScript type definitions
+├── utils/          # Utility functions
+├── seed/           # Database seeding scripts
+└── index.ts        # Application entry point
+```
 
 ---
 
-## 🔙 Backend (`/backend`)
+## Getting Started
 
-### 🛠 Tech Stack
+### Prerequisites
 
-- Node.js
-- Express
-- TypeScript
-- PostgreSQL
-- Prisma ORM
-- JWT-based authentication
+- Node.js (v18 or higher)
+- PostgreSQL database
+- npm or yarn
 
-### 📦 Features
+### Installation
 
-- User authentication (JWT)
-- Role-based access: `waiter`, `cook`
-- APIs for:
-    - Login
-    - Creating/updating orders
-    - Listing/filtering orders by status
-- Modular architecture
+1. Install dependencies:
+    ```bash
+    npm install
+    ```
 
-### 🚀 Getting Started
+2. Set up your PostgreSQL database and update the `.env` file:
+    ```
+    DATABASE_URL="postgresql://username:password@localhost:5432/pizza_store?schema=public"
+    ```
 
-```bash
-  cd backend
-  npm install
+3. Generate Prisma client and push schema:
+    ```bash
+    npm run db:generate
+    npm run db:push
+    ```
+
+4. Seed the database with sample data:
+    ```bash
+    npm run db:seed
+    ```
+
+5. Start the development server:
+    ```bash
+    npm run dev
+    ```
+
+The API will be available at `http://localhost:3000`
+
+---
+
+## API Endpoints
+
+### Authentication
+- `POST /api/login` - Login with credentials
+
+### Orders
+- `POST /api/orders` - Create new order (waiter only)
+- `PUT /api/orders/:id` - Update order (waiter only)
+- `GET /api/orders` - Get all orders (both roles)
+- `PATCH /api/orders/:id/confirm` - Confirm order (cooker only)
+- `PATCH /api/orders/:id/ready` - Mark order ready (cooker only)
+
+### Ingredients
+- `GET /api/ingredients` - Get all ingredients (both roles)
+- `POST /api/ingredients` - Add new ingredient (dev only)
+
+## Authentication
+
+### Login Credentials
+- **Waiter**: `{ "name": "waiter", "pass": "waiter" }`
+- **Cooker**: `{ "name": "cook", "pass": "cook" }`
+
+### Using the API
+After login, include the role in the `x-role` header for all requests:
 ```
-🔧 Create .env file
-```aiignore
-  DATABASE_URL=postgresql://user:password@localhost:5432/pizzastore
-  PORT=5000
-  JWT_SECRET=your_jwt_secret
+x-role: waiter
+```
+or
+```
+x-role: cooker
 ```
 
-▶️ Run the server
-```bash
-  npx prisma generate
-  npx prisma migrate dev --name init
-  npm run dev
-```
+## Order Status Flow
 
+1. **WAITING** - Initial status when order is created
+2. **CONFIRMED** - Cooker confirms the order
+3. **READY** - Cooker marks order as ready for pickup
 
-## 📱 Mobile App (`/mobile`)
+## Database Schema
 
-### 🛠 Tech Stack
+- **Orders**: Table number, status, timestamps, and linked ingredients
+- **Ingredients**: Available pizza ingredients
+- **OrderIngredients**: Many-to-many relationship between orders and ingredients
 
-- **React Native CLI**
-- **TypeScript**
-- **React Navigation** (drawer + bottom tabs)
-- **Zustand** or **Redux** for state management
-- **Firebase** (optional, for push notifications)
+## Development Scripts
 
-### 📦 Features
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run db:reset` - Reset database and reseed
+- `npm run db:seed` - Seed database with sample data
 
-- Role-based user interface:
-    - Dynamic routing based on logged-in user role
-- Clean, dark mode UI
-- Bottom tab navigation + animated drawer
-- Order lifecycle management with real-time updates
-
-### 👥 Role-Based Views
-
-The app provides different features depending on the authenticated user's role:
-
-#### 👨‍🍳 Cook
-
-- Access to three tabs:
-    - **Waiting Orders**
-    - **OnGoing Orders**
-    - **Completed Orders**
-- View real-time order status
-- Mark orders as ready or completed
-
-#### 🧑‍💼 Waiter
-
-- View all current table orders
-- Create new pizza orders
-- Edit existing orders:
-    - Change quantity
-    - Add/remove items
-- See assigned tables and manage them
-
-### 🔐 Login Flow
-
-- On launch, users see a login screen
-- After successful login:
-    - App redirects to a role-specific dashboard
-- Role and authentication token are stored securely
-
+---
 
 # ✍️ Author
 
