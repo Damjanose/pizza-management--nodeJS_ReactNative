@@ -41,7 +41,6 @@ export default function LoginScreen() {
               resizeMode="contain"
             />
             <Text style={styles.title}>Login</Text>
-            {error && <Text style={styles.textErr}>{error}</Text>}
 
             <View style={styles.inputContainer}>
               <TextInput
@@ -74,6 +73,8 @@ export default function LoginScreen() {
                 />
               </TouchableOpacity>
             </View>
+            {error && <Text style={styles.textErr}>{error}</Text>}
+
 
             <TouchableOpacity
               style={styles.button}
