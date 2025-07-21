@@ -14,14 +14,16 @@ import {
 } from "react-native";
 import useAuth from "../../providers/hooks/useAuth";
 import styles from "./LoginScreen.styles";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function LoginScreen() {
   const { login, error, loading } = useAuth();
-  const [name, setName] = useState("cook"); // waiter
-  const [pass, setPass] = useState("cook"); // waiter
+  const [name, setName] = useState("waiter"); // waiter
+  const [pass, setPass] = useState("waiter"); // waiter
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
-    await login(name, pass);
+    await login(name, pass); 
   };
 
   return (
@@ -45,9 +47,9 @@ export default function LoginScreen() {
               <TextInput
                 value={name}
                 onChangeText={setName}
-                placeholder="Email"
+                placeholder="Name"
                 style={styles.input}
-                keyboardType="email-address"
+                placeholderTextColor="#000"
                 autoCapitalize="none"
               />
             </View>
@@ -58,8 +60,19 @@ export default function LoginScreen() {
                 onChangeText={setPass}
                 placeholder="Password"
                 style={styles.input}
-                secureTextEntry
+                placeholderTextColor="#000"
+                secureTextEntry={!showPassword} 
               />
+              <TouchableOpacity
+                style={{ position: "absolute", right: 10, top: 12 }}
+                onPress={() => setShowPassword((prev) => !prev)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="#888"
+                />
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity
