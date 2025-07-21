@@ -18,8 +18,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function LoginScreen() {
   const { login, error, loading } = useAuth();
-  const [name, setName] = useState("waiter"); // waiter
-  const [pass, setPass] = useState("waiter"); // waiter
+  const [name, setName] = useState("cook"); // waiter
+  const [pass, setPass] = useState("cook"); // waiter
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
