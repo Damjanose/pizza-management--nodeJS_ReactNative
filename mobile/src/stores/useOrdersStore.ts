@@ -45,7 +45,7 @@ export const useOrdersStore = create<OrdersState>((set) => ({
     try {
       const response = await OrdersService.getAllOrders();
       set({ orders: response.data, loading: false });
-    } catch (err: any) {
+    } catch (err: any) {      
       set({ error: err.message ?? "Failed to fetch orders", loading: false });
     }
   },

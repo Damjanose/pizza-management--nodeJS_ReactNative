@@ -67,7 +67,9 @@ export default function WaiterHomeScreen() {
         </View>
         <Text style={styles.time}>{time}</Text>
         <Text numberOfLines={1} style={styles.ingredients}>
-          {item.ingredients.map((i) => i.name).join(", ")}
+          {(item.ingredients ?? []).length > 0
+            ? item.ingredients.map((i) => i.name).join(", ")
+            : "No ingredients"}
         </Text>
       </TouchableOpacity>
     );
@@ -83,6 +85,7 @@ export default function WaiterHomeScreen() {
         // pull-to-refresh props:
         refreshing={loading}
         onRefresh={fetchOrders}
+        ListEmptyComponent={<Text>No orders</Text>}
       />
     </SafeAreaView>
   );

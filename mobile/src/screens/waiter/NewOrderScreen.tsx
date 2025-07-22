@@ -71,6 +71,7 @@ export default function NewOrderScreen({ navigation }: Props) {
         value={tableNumber}
         onChangeText={setTableNumber}
         placeholder="e.g. 3"
+        placeholderTextColor={'#ccc'}
       />
 
       <Text style={[styles.label, { marginTop: 24 }]}>Ingredients</Text>

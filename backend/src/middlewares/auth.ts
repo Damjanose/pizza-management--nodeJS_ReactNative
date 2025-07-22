@@ -1,11 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserRole } from '../types/auth';
+import { prisma } from '../utils/prisma';
 
-// Static user credentials
-const USERS = {
-  waiter: { name: 'waiter', pass: 'waiter', role: 'waiter' as UserRole },
-  cook: { name: 'cook', pass: 'cook', role: 'cooker' as UserRole },
-};
 
 export const validateRole = (req: Request, res: Response, next: NextFunction) => {
   const role = req.headers['x-role'] as UserRole;
@@ -38,7 +34,24 @@ export const requireRole = (allowedRoles: UserRole[]) => {
   };
 };
 
-export const validateCredentials = (name: string, pass: string): UserRole | null => {
-  const user = Object.values(USERS).find(u => u.name === name && u.pass === pass);
-  return user ? user.role : null;
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { name, pass } = req.body;
+
+    if (!name || !pass) {
+      return res.status(400).json({ error: 'Name and password are required' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { name },
+    });
+
+    if (!user || user.password !== pass) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    res.json({ role: user.role });
+  } catch (error) {
+    res.status(500).json({ error: 'Login failed' });
+  }
 };

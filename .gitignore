@@ -25,3 +25,4 @@ mobile/.gradle/
 
 **/.gradle/
 /mobile/android/.gradle/
+/mobile/android/.gradle/*

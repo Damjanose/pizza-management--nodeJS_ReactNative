@@ -1,17 +1,17 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../utils/prisma';
 
 async function main() {
-  console.log('🌱 Starting seed...');
-
-  // Clear existing data
-  await prisma.orderIngredient.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.ingredient.deleteMany();
+  await prisma.user.createMany({
+    data: [
+      { name: 'waiter', password: 'waiter', role: 'waiter' },
+      { name: 'cooker', password: 'cooker', role: 'cooker' },
+    ],
+    skipDuplicates: true,
+  });
+  console.log('Seeded users!');
 
   // Seed ingredients
-  const ingredients = await prisma.ingredient.createMany({
+  await prisma.ingredient.createMany({
     data: [
       { name: 'Mozzarella Cheese' },
       { name: 'Pepperoni' },
@@ -29,53 +29,14 @@ async function main() {
       { name: 'Spinach' },
       { name: 'Garlic' },
     ],
+    skipDuplicates: true,
   });
-
-  console.log(`✅ Created ${ingredients.count} ingredients`);
-
-  // Get all ingredients for sample orders
-  const allIngredients = await prisma.ingredient.findMany();
-
-  // Create sample orders
-  const sampleOrders = [
-    {
-      tableNumber: 1,
-      ingredientIds: [1, 2, 3], // Mozzarella, Pepperoni, Mushrooms
-      status: 'WAITING' as const,
-    },
-    {
-      tableNumber: 2,
-      ingredientIds: [1, 4, 5, 6], // Mozzarella, Bell Peppers, Italian Sausage, Onions
-      status: 'CONFIRMED' as const,
-    },
-    {
-      tableNumber: 3,
-      ingredientIds: [1, 10, 11], // Mozzarella, Pineapple, Ham
-      status: 'READY' as const,
-    },
-  ];
-
-  for (const orderData of sampleOrders) {
-    await prisma.order.create({
-      data: {
-        tableNumber: orderData.tableNumber,
-        status: orderData.status,
-        ingredients: {
-          create: orderData.ingredientIds.map(ingredientId => ({
-            ingredientId,
-          })),
-        },
-      },
-    });
-  }
-
-  console.log(`✅ Created ${sampleOrders.length} sample orders`);
-  console.log('🎉 Seed completed successfully!');
+  console.log('Seeded ingredients!');
 }
 
 main()
-  .catch((e) => {
-    console.error('❌ Seed failed:', e);
+  .catch(e => {
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {
