@@ -16,7 +16,7 @@ interface AuthType {
 export const AuthContext = createContext<AuthType | null>(null);
 
 export const AuthProvider = ({ children }: any) => {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }: any) => {
     setLoading(true);
     try {
       const { data } = await AuthService.login({ name, pass });
+      console.log(data);
       const { role } = data;
 
       if (role) {
@@ -34,8 +35,7 @@ export const AuthProvider = ({ children }: any) => {
         setIsSignedIn(true);
       }
     } catch (e: any) {
-      setError("login error");
-      console.error(e);
+      setError(e.response.data.error || "login error");
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: any) => {
     await AsyncStorage.clear();
     setIsSignedIn(false);
     setRole("");
-    setError(null);
+    setError('');
   };
 
   const isLoggedInCheck = useCallback(async () => {
