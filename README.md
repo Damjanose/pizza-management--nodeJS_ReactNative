@@ -14,39 +14,13 @@ A Node.js backend API built with Express, TypeScript, and PostgreSQL for managin
 
 ## App Screenshots & Flow
 
-### 1. Login
-
-![Login Screen](assets/images/login.png)
-
+---
+### 1. Waiter Flow
+![Waiter Orders](assets/images/Waiter.png)
 ---
 
-### 2. Waiter Flow
-
-#### a) List of Orders
-![Waiter Orders](assets/images/waiter/waiter_orders.png)
-
-#### b) Create New Order
-![Waiter Create Order](assets/images/waiter/waiter_createOrder.png)
-
-#### c) View Order
-![Waiter View Order](assets/images/waiter/waiter_viewOrder.png)
-
-#### d) Edit Order
-![Waiter Edit Order](assets/images/waiter/waiter_editOrder.png)
-
----
-
-### 3. Cooker Flow
-
-#### a) Waiting Order (to be cooked)
-![Cooker Waiting Order](assets/images/cooker/cook_waitingOrder.png)
-
-#### b) Cooking Order (in progress)
-![Cooker Cooking Order](assets/images/cooker/cook_cookingOrder.png)
-
-#### c) Ready Order (finished cooking, ready to serve)
-![Cooker Ready Order](assets/images/cooker/cook_readyOrder.png)
-
+### 2. Cooker Flow
+![Cooker Waiting Order](assets/images/Cooker.png)
 ---
 
 ## Flow Description
