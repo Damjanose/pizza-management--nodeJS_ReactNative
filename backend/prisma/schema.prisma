@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,23 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Order {
-  id           Int                 @id @default(autoincrement())
-  tableNumber  Int
-  status       OrderStatus         @default(WAITING)
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
-  ingredients  OrderIngredient[]
-
-  @@map("orders")
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  password String
+  role     String
 }
 
 model Ingredient {
-  id     Int                 @id @default(autoincrement())
-  name   String              @unique
+  id     Int               @id @default(autoincrement())
+  name   String            @unique
   orders OrderIngredient[]
+}
 
-  @@map("ingredients")
+model Order {
+  id           Int               @id @default(autoincrement())
+  tableNumber  Int
+  status       String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  ingredients  OrderIngredient[]
 }
 
 model OrderIngredient {
@@ -36,11 +36,4 @@ model OrderIngredient {
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
   @@id([orderId, ingredientId])
-  @@map("order_ingredients")
-}
-
-enum OrderStatus {
-  WAITING
-  CONFIRMED
-  READY
 }

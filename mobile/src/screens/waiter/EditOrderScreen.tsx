@@ -66,9 +66,18 @@ export default function EditOrderScreen({ route, navigation }: Props) {
     );
   }
 
+  const order = orders.find((o) => o.id === orderId);
+  const isEditable = order?.status === "WAITING";
+
   return (
     <SafeAreaView style={styles.container}>
       {error && <Text style={styles.error}>Error: {error}</Text>}
+
+      {!isEditable && (
+        <Text style={{ color: "red", marginTop: 8 }}>
+          You can only edit orders that are in WAITING status.
+        </Text>
+      )}
 
       <Text style={styles.label}>Table Number</Text>
       <TextInput
@@ -76,6 +85,7 @@ export default function EditOrderScreen({ route, navigation }: Props) {
         keyboardType="number-pad"
         value={tableNumber}
         onChangeText={setTableNumber}
+        editable={isEditable}
       />
 
       <Text style={[styles.label, { marginTop: 24 }]}>Ingredients</Text>
@@ -114,7 +124,7 @@ export default function EditOrderScreen({ route, navigation }: Props) {
         <Button
           title="Save Changes"
           onPress={handleSave}
-          disabled={loading || !tableNumber.trim() || selectedIds.length === 0}
+          disabled={loading || !tableNumber.trim() || selectedIds.length === 0 || !isEditable}
         />
       </View>
     </SafeAreaView>

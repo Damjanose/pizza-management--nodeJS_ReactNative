@@ -18,8 +18,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function LoginScreen() {
   const { login, error, loading } = useAuth();
-  const [name, setName] = useState("cook"); // waiter
-  const [pass, setPass] = useState("cook"); // waiter
+  const [name, setName] = useState("waiter"); // cooker
+  const [pass, setPass] = useState("waiter"); // cooker
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
@@ -58,9 +58,11 @@ export default function LoginScreen() {
                 value={pass}
                 onChangeText={setPass}
                 placeholder="Password"
+                textContentType="password"
                 style={styles.input}
                 placeholderTextColor="#000"
-                secureTextEntry={!showPassword} 
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
               />
               <TouchableOpacity
                 style={{ position: "absolute", right: 10, top: 12 }}

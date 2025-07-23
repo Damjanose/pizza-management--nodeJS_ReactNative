@@ -8,7 +8,6 @@ export const getAllIngredients = async (req: Request, res: Response, next: NextF
         name: 'asc',
       },
     });
-
     res.json(ingredients);
   } catch (error) {
     next(error);
