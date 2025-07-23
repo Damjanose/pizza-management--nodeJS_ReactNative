@@ -55,6 +55,11 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
         : [],
     });
   } catch (error) {
+    // If error is a known Prisma error, return a clear message
+    if (error instanceof Error && error.message.includes('This table already has an ongoing order.')) {
+      res.status(400).json({ error: 'This table already has an ongoing order.' });
+      return;
+    }
     next(error);
   }
 };

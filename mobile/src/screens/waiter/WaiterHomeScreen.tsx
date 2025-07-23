@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -21,6 +22,29 @@ type NavigationProp = NativeStackNavigationProp<
   WaiterStackParamList,
   "WaiterHome"
 >;
+
+const STATUS_COLORS: Record<string, string> = {
+  WAITING: '#FFD700', // gold
+  READY: '#4CAF50',   // green
+  CONFIRMED: '#2196F3', // blue
+};
+
+const groupAndSortOrders = (orders: Order[]): Record<string, Order[]> => {
+  const grouped: Record<string, Order[]> = {
+    WAITING: [],
+    READY: [],
+    CONFIRMED: [],
+  };
+  orders.forEach((order: Order) => {
+    if (grouped[order.status]) {
+      grouped[order.status].push(order);
+    }
+  });
+  Object.keys(grouped).forEach((status: string) => {
+    grouped[status].sort((a: Order, b: Order) => a.tableNumber - b.tableNumber);
+  });
+  return grouped;
+};
 
 export default function WaiterHomeScreen() {
   const { orders, loading, error, fetchOrders } = useOrdersStore();
@@ -46,100 +70,124 @@ export default function WaiterHomeScreen() {
     );
   }
 
-  const renderItem = ({ item }: { item: Order }) => {
-    const time = new Date(item.createdAt).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const statusStyle =
-      styles[`status_${item.status.toLowerCase()}` as keyof typeof styles];
-
-    return (
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() =>
-          navigation.navigate("TableDetails", { orderId: item.id })
-        }
-      >
-        <View style={styles.header}>
-          <Text style={styles.table}>Table {item.tableNumber}</Text>
-          <Text style={[styles.status, statusStyle]}>{item.status}</Text>
-        </View>
-        <Text style={styles.time}>{time}</Text>
-        <Text numberOfLines={1} style={styles.ingredients}>
-          {(item.ingredients ?? []).length > 0
-            ? item.ingredients.map((i) => i.name).join(", ")
-            : "No ingredients"}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
+  const groupedOrders = groupAndSortOrders(orders);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={orders}
-        keyExtractor={(o) => o.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-        // pull-to-refresh props:
-        refreshing={loading}
-        onRefresh={fetchOrders}
-        ListEmptyComponent={<Text>No orders</Text>}
-      />
-    </SafeAreaView>
+    <ScrollView style={styles.container}>
+      {(['WAITING', 'READY', 'CONFIRMED'] as const).map((status) => (
+        <View key={status} style={styles.statusGroup}>
+          <Text style={styles.cardHeader}>{status}</Text>
+          {groupedOrders[status].length === 0 ? (
+            <Text style={styles.emptyText}>No orders in this status.</Text>
+          ) : (
+            groupedOrders[status].map((order: Order) => (
+              <TouchableOpacity
+                key={order.id}
+                style={[styles.orderCard, { borderLeftColor: STATUS_COLORS[order.status] || '#ccc' }]}
+                onPress={() => navigation.navigate('TableDetails', { orderId: order.id })}
+                activeOpacity={0.8}
+              >
+                <View style={styles.orderHeaderRow}>
+                  <Text style={styles.orderTable}>Table {order.tableNumber}</Text>
+                  <View style={[styles.statusBadge, { backgroundColor: STATUS_COLORS[order.status] || '#ccc' }]}> 
+                    <Text style={styles.statusBadgeText}>{order.status}</Text>
+                  </View>
+                </View>
+                <View style={styles.chipRow}>
+                  {order.ingredients && order.ingredients.length > 0 ? (
+                    order.ingredients.map((i: { name: string }, idx: number) => (
+                      <View key={idx} style={styles.chip}>
+                        <Text style={styles.chipText}>{i.name}</Text>
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={styles.noIngredients}>No ingredients</Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            ))
+          )}
+        </View>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
-  },
-  list: {
-    padding: 16,
-    paddingBottom: 32,
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
+    backgroundColor: '#f5f5f5',
     padding: 12,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  statusGroup: {
+    marginBottom: 24,
+  },
+  cardHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+  },
+  emptyText: {
+    color: '#888',
+    fontStyle: 'italic',
+    marginBottom: 8,
+  },
+  orderCard: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
+    borderLeftWidth: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  orderHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    justifyContent: 'space-between',
+  },
+  orderTable: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#222',
+  },
+  statusBadge: {
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+  },
+  statusBadgeText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 13,
+    textTransform: 'uppercase',
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 4,
+  },
+  chip: {
+    backgroundColor: '#e0e0e0',
+    borderRadius: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginRight: 6,
     marginBottom: 6,
   },
-  table: {
-    fontSize: 18,
-    fontWeight: "600",
+  chipText: {
+    fontSize: 13,
+    color: '#333',
   },
-  status: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  status_waiting: {
-    color: "#FFA500",
-  },
-  status_ready: {
-    color: "#1E90FF",
-  },
-  status_confirmed: {
-    color: "#28A745",
-  },
-  time: {
-    fontSize: 12,
-    color: "#555",
-  },
-  ingredients: {
-    fontSize: 14,
-    color: "#333",
-    marginTop: 4,
+  noIngredients: {
+    color: '#aaa',
+    fontStyle: 'italic',
+    fontSize: 13,
   },
   center: {
     flex: 1,

@@ -76,7 +76,7 @@ export default function TableDetailsScreen() {
         </View>
 
         <TouchableOpacity
-          style={[styles.button, order.status !== "WAITING" && styles.disableButton]}
+          style={styles.button}
           disabled={order.status !== "WAITING"}
           onPress={() =>
             navigation.navigate("EditOrder", { orderId: order.id })
