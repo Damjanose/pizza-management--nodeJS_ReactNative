@@ -58,9 +58,11 @@ export default function LoginScreen() {
                 value={pass}
                 onChangeText={setPass}
                 placeholder="Password"
+                textContentType="password"
                 style={styles.input}
                 placeholderTextColor="#000"
-                secureTextEntry={!showPassword} 
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
               />
               <TouchableOpacity
                 style={{ position: "absolute", right: 10, top: 12 }}
