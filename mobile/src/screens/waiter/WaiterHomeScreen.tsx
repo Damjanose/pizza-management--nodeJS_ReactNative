@@ -10,7 +10,7 @@ import {
   ScrollView,
   RefreshControl,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Order, useOrdersStore } from "../../stores/useOrdersStore";
 
@@ -42,7 +42,7 @@ const groupAndSortOrders = (orders: Order[]): Record<string, Order[]> => {
     }
   });
   Object.keys(grouped).forEach((status: string) => {
-    grouped[status].sort((a: Order, b: Order) => a.tableNumber - b.tableNumber);
+    grouped[status].sort((a: Order, b: Order) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   });
   return grouped;
 };
@@ -54,6 +54,12 @@ export default function WaiterHomeScreen() {
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchOrders();
+    }, [fetchOrders])
+  );
 
   if (loading && orders.length === 0) {
     return (
