@@ -67,11 +67,15 @@ export default function TableDetailsScreen() {
 
           <Text style={styles.sectionTitle}>Ingredients</Text>
           <View style={styles.ingredientsContainer}>
-            {order.ingredients.map((i) => (
-              <View key={i.id} style={styles.ingredientChip}>
-                <Text style={styles.ingredientText}>{i.name}</Text>
-              </View>
-            ))}
+            {order.ingredients && order.ingredients.length > 0 ? (
+              order.ingredients.map((i) => (
+                <View key={i.id} style={styles.ingredientChip}>
+                  <Text style={styles.ingredientText}>{i.name}</Text>
+                </View>
+              ))
+            ) : (
+              <Text style={{ color: '#aaa', fontStyle: 'italic' }}>No ingredients</Text>
+            )}
           </View>
         </View>
 

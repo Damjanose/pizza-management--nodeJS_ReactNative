@@ -67,7 +67,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 export const updateOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const orderId = parseInt(req.params.id);
-    const { tableNumber, status } = req.body;
+    const { tableNumber, status, ingredientIds } = req.body;
 
     if (isNaN(orderId)) {
       res.status(400).json({ error: 'Invalid order ID' });
@@ -87,12 +87,40 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     if (tableNumber !== undefined) updateData.tableNumber = tableNumber;
     if (status !== undefined) updateData.status = status;
 
+    // Update the order
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: updateData,
     });
 
-    res.json(updatedOrder);
+    // If ingredientIds are provided, update the join table
+    if (ingredientIds) {
+      // Remove existing ingredients
+      await prisma.orderIngredient.deleteMany({ where: { orderId } });
+      // Add new ingredients
+      if (ingredientIds.length > 0) {
+        await prisma.orderIngredient.createMany({
+          data: ingredientIds.map((ingredientId: number) => ({
+            orderId,
+            ingredientId,
+          })),
+        });
+      }
+    }
+
+    // Fetch the order with its ingredients
+    // @ts-ignore
+    const orderIngredients = await (prisma as any).orderIngredient.findMany({
+      where: { orderId },
+      include: { ingredient: true },
+    });
+
+    res.json({
+      ...updatedOrder,
+      ingredients: Array.isArray(orderIngredients)
+        ? orderIngredients.map((oi: any) => oi.ingredient)
+        : [],
+    });
   } catch (error) {
     next(error);
   }

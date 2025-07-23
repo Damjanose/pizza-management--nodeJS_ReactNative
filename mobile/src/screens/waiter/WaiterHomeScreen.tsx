@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -73,7 +74,12 @@ export default function WaiterHomeScreen() {
   const groupedOrders = groupAndSortOrders(orders);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={loading} onRefresh={fetchOrders} />
+      }
+    >
       {(['WAITING', 'READY', 'CONFIRMED'] as const).map((status) => (
         <View key={status} style={styles.statusGroup}>
           <Text style={styles.cardHeader}>{status}</Text>

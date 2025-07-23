@@ -89,6 +89,8 @@ export const useOrdersStore = create<OrdersState>((set) => ({
     try {
       const payload = { tableNumber, ingredientIds };
       const response = await OrdersService.editOrder(id, payload);
+      console.log(response);
+      
       set((state) => ({
         orders: state.orders.map((o) => (o.id === id ? response.data : o)),
         loading: false,
