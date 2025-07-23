@@ -23,7 +23,10 @@ export default function OrdersListByStatus({
   action,
 }: Props) {
   const { orders, loading, fetchOrders } = useOrdersStore();
-  const filtered = orders.filter((o) => o.status === status);
+  // Sort so oldest first
+  const filtered = orders
+    .filter((o) => o.status === status)
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
   useEffect(() => {
     fetchOrders();
@@ -44,9 +47,7 @@ export default function OrdersListByStatus({
           <View
             style={[
               styles.badge,
-              // styles[
-              //   `badge_${item.status.toLowerCase()}` as keyof typeof styles
-              // ],
+              styles[`badge_${item.status?.toLowerCase()}` as keyof typeof styles] as any,
             ]}
           >
             <Text style={styles.badgeText}>{item.status}</Text>
