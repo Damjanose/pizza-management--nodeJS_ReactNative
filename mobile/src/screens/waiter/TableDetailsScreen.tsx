@@ -76,7 +76,8 @@ export default function TableDetailsScreen() {
         </View>
 
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, order.status !== "WAITING" && styles.disableButton]}
+          disabled={order.status !== "WAITING"}
           onPress={() =>
             navigation.navigate("EditOrder", { orderId: order.id })
           }
@@ -188,5 +189,8 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  disableButton: {
+    backgroundColor: "#ccc",
   },
 });
