@@ -56,7 +56,7 @@ export default function OrdersListByStatus({
         <Text style={styles.time}>{time}</Text>
 
         <View style={styles.ingredientsContainer}>
-          {item.ingredients &&item.ingredients.map((i) => (
+          {(item.ingredients ?? []).map((i) => (
             <View key={i.id} style={styles.chip}>
               <Text style={styles.chipText}>{i.name}</Text>
             </View>
@@ -66,7 +66,10 @@ export default function OrdersListByStatus({
         {action && actionLabel && (
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => action(item.id)}
+            onPress={async () => {
+              await action(item.id);
+              fetchOrders();
+            }}
           >
             <Text style={styles.actionText}>{actionLabel}</Text>
           </TouchableOpacity>
